@@ -91,10 +91,10 @@ class Matrix:
             for i in range(len(self.mat)):
                 row = []
                 for j in range(len(other.mat[0])):
-                    sum1 = 0
+                    determ1 = 0
                     for k in range(len(other.mat)):
-                        sum1 += self.mat[i][k] * other.mat[k][j]
-                    row.append(sum1)
+                        determ1 += self.mat[i][k] * other.mat[k][j]
+                    row.append(determ1)
 
                 c.mat.append(row)
             return c
@@ -128,62 +128,27 @@ class Matrix:
             a = a* a 
         return res
 
-    def cof(self, mat, temp, p, q,n):
-        i = 0
-        j = 0
-        for row in range(n):
-            for col in range(n):
-                if (row != p) & (col != q):
-                    temp[i][j] = mat[row][col]
-                    j = j+1
-                    if j == n - 1:
-                        j = 0
-                        i += 1
-        return temp
+    def cof(self, mat, i, j):
+        return [row[: j] + row[j+1:] for row in (mat[: i] + mat[i+1:])]
 
-    def det(self, mat, n):
+    def det(self, mat):
         if len(mat) == len(mat[0]):
+            n = len(mat)
             if n == 1:
                 return mat[0][0]
             elif n == 2:
                 return mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]
             else:
-                determinant = 0
-                sign = 1
-                temp = [[0] * (n) for i in range(n)]
-                for f in range(n):
-                    temp = Matrix.cof(self, mat, temp, 0, f,n)
-                    determinant = determinant + sign * int(mat[0][f]) * Matrix.det(self, temp,n-1)
-                    sign = -sign
-                return determinant
+                determ = 0
+                for current_column in range(len(mat)):
+ 
+                    sign = (-1) ** (current_column)
+
+                    sub_det = self.det(mat=self.cof(mat=mat, i=0, j=current_column))
+
+                    determ += (sign * mat[0][current_column] * sub_det)
+    
+                    return determ
         else:
             raise InvalidMatrixOperationException(msg='Not a SQUARE matrix')
 
-
-# r3 = [1, 4]
-# r1 = [1, 2, 3]
-# r2 = [2, 3, 4]
-# r4 = [1, 2, 3]
-# r5 = [1, 3, 4]
-# r6 = [1, 2, 5]
-# # r7 = [1, 2, 6]
-A = Matrix([[16, 16, 7, 21], [26.6, 26.4, 11.8, 33.2], [26, 25, 12, 27], [19, 15, 8, 18]])
-# B = Matrix([r4, r5, r6])
-# K1 = Matrix([r4, r5])
-# K2 = Matrix([[1,2],[2,3],[3,4]])
-
-# print(A.mat)
-# print(B.mat)
-# try:
-#     C = A + B
-#     D = A - B
-#     E = (A ** 2)*A
-#     # print((K1*K2).mat)
-#     F = A ** 3
-print(A.det(A.mat, len(A.mat)))
-#     print(C.mat)
-#     print(D.mat)
-#     print(E.mat)
-#     print(F.mat)
-# except InvalidMatrixOperationException as e:
-#     print (e)

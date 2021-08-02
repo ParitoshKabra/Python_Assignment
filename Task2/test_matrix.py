@@ -68,12 +68,11 @@ class TestMatrix(unittest.TestCase):
         A = Matrix([[1,2,3], [2,3,4.8], [3,2,4], [2,3,1]])
         B = Matrix([[4,3,2,1], [3,2,1,4], [2,3,1,4]])
         det = np.array([[16, 16, 7, 21], [26.6, 26.4, 11.8, 33.2], [26, 25, 12, 27], [19, 15, 8, 18]])
-        deter = np.linalg.det(det)
+        deter = int(np.linalg.det(det))
         C = A*B
-        print(C.mat)
-        self.assertEqual(C.det(mat=C.mat, n=len(C.mat)), deter) 
+        self.assertEqual(int(C.det(C.mat)), deter) 
         with self.assertRaises(InvalidMatrixOperationException):
-            A.det(mat=A.mat, n=len(A.mat))       
+            A.det(A.mat)       
 
 if __name__ =='__main__':
     unittest.main()
